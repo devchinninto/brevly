@@ -1,5 +1,5 @@
-import { AddLink } from './components/add-link'
-import { LinkList } from './components/link-list'
+import { AddLink } from './components/ui/add-link'
+import { LinkList } from './components/ui/link-list'
 import logo from './assets/logo.svg'
 
 export function App() {

@@ -1,8 +1,8 @@
 import { Button } from './button'
 import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react'
-import { LinkCard, type Link } from './link-card'
+import { UrlCard, type Url } from './url-card'
 
-const links: Link[] = [
+const urls: Url[] = [
   {
     id: '1',
     shortUrl: 'brev.ly/portfolio',
@@ -11,12 +11,12 @@ const links: Link[] = [
   }
 ]
 
-export function LinkList() {
-  const isEmpty = links.length === 0
+export function UrlList() {
+  const isEmpty = urls.length === 0
   const isEmptyMessage = 'AINDA NÃO EXISTEM LINKS CADASTRADOS'
 
-  function handleCopy(link: Link) {
-    navigator.clipboard.writeText(`https://${link.shortUrl}`)
+  function handleCopy(url: Url) {
+    navigator.clipboard.writeText(`https://${url.shortUrl}`)
   }
 
   // function handleDelete(link: Link) {
@@ -43,10 +43,10 @@ export function LinkList() {
         </div>
       ) : (
         <ul className="flex flex-col divide-y divide-gray-300 border-t border-gray-300">
-          {links.map((link) => (
-            <li key={link.id}>
-              <LinkCard
-                link={link}
+          {urls.map((url) => (
+            <li key={url.id}>
+              <UrlCard
+                url={url}
                 onCopy={handleCopy}
                 // onDelete={handleDelete}
               />

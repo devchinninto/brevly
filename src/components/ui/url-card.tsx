@@ -1,20 +1,20 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
 
-export interface Link {
+export interface Url {
   id: string
   shortUrl: string
   originalUrl: string
   accessCount: number
 }
 
-interface LinkCardProps {
-  link: Link
-  onCopy?: (link: Link) => void
-  onDelete?: (link: Link) => void
+interface UrlCardProps {
+  url: Url
+  onCopy?: (url: Url) => void
+  onDelete?: (url: Url) => void
 }
 
-export function LinkCard({ link, onCopy, onDelete }: LinkCardProps) {
-  const { shortUrl, originalUrl, accessCount } = link
+export function UrlCard({ url, onCopy, onDelete }: UrlCardProps) {
+  const { shortUrl, originalUrl, accessCount } = url
 
   return (
     <section className="flex items-center gap-4 py-4">
@@ -38,7 +38,7 @@ export function LinkCard({ link, onCopy, onDelete }: LinkCardProps) {
         <button
           type="button"
           aria-label="Copiar link encurtado"
-          onClick={() => onCopy?.(link)}
+          onClick={() => onCopy?.(url)}
           className="flex size-8 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-300"
         >
           <CopyIcon className="size-4" />
@@ -46,7 +46,7 @@ export function LinkCard({ link, onCopy, onDelete }: LinkCardProps) {
         <button
           type="button"
           aria-label="Excluir link"
-          onClick={() => onDelete?.(link)}
+          onClick={() => onDelete?.(url)}
           className="flex size-8 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-300"
         >
           <TrashIcon className="size-4" />

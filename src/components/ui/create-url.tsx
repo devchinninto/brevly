@@ -30,7 +30,11 @@ const createShortUrlSchema = z.object({
 
 type CreateShortUrlPayload = z.infer<typeof createShortUrlSchema>
 
-export function CreateShortUrl() {
+interface CreateShortUrlProps {
+  onUrlCreated?: () => void
+}
+
+export function CreateShortUrl({ onUrlCreated }: CreateShortUrlProps) {
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const {
@@ -46,6 +50,7 @@ export function CreateShortUrl() {
     try {
       await createShortUrl(payload)
       reset()
+      onUrlCreated?.()
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : 'Erro desconhecido.'

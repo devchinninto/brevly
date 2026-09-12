@@ -1,4 +1,5 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
+import { env } from '../../env'
 
 export interface Url {
   id: string
@@ -13,19 +14,27 @@ interface UrlCardProps {
   onDelete?: (url: Url) => void
 }
 
+export function getResolvedShortUrl({ shortUrl }: Pick<Url, 'shortUrl'>) {
+  const handle = shortUrl.split('/').pop()
+  const backendUrl = env.VITE_BACKEND_URL.replace(/\/$/, '')
+
+  return `${backendUrl}/${handle}`
+}
+
 export function UrlCard({ url, onCopy, onDelete }: UrlCardProps) {
-  const { shortUrl, originalUrl, accessCount } = url
+  const { originalUrl, accessCount } = url
+  const resolvedShortUrl = getResolvedShortUrl(url)
 
   return (
     <section className="flex items-center gap-4 py-4">
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <a
-          href={`https://${shortUrl}`}
+          href={resolvedShortUrl}
           target="_blank"
           rel="noreferrer"
           className="truncate text-md font-bold text-blue-base hover:text-blue-dark"
         >
-          {shortUrl}
+          {resolvedShortUrl.replace(/^https?:\/\//i, '')}
         </a>
         <span className="truncate text-sm text-gray-500">{originalUrl}</span>
       </div>

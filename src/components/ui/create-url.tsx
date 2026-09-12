@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { InputField } from './input-field'
 import { Button } from './button'
+import { Toast } from './toast'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type SubmitHandler, useForm } from 'react-hook-form'
@@ -21,14 +23,16 @@ const createShortUrlSchema = z.object({
     .string()
     .min(2)
     .max(12)
-    .regex(/^[a-zA-Z0-9]+$/, {
-      error: 'Use apenas letras e números, sem espaços ou símbolos.'
+    .regex(/^[a-zA-Z0-9_-]+$/, {
+      error: 'Use apenas letras, números, hífens e underlines, sem espaços.'
     })
 })
 
 type CreateShortUrlPayload = z.infer<typeof createShortUrlSchema>
 
 export function CreateShortUrl() {
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
@@ -39,9 +43,14 @@ export function CreateShortUrl() {
   })
 
   const onSubmit: SubmitHandler<CreateShortUrlPayload> = async (payload) => {
-    await createShortUrl(payload)
-
-    reset()
+    try {
+      await createShortUrl(payload)
+      reset()
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : 'Erro desconhecido.'
+      )
+    }
   }
 
   return (
@@ -69,6 +78,15 @@ export function CreateShortUrl() {
           Salvar link
         </Button>
       </form>
+
+      {submitError && (
+        <Toast
+          title="Erro no cadastro"
+          description={submitError}
+          variant="error"
+          onClose={() => setSubmitError(null)}
+        />
+      )}
     </section>
   )
 }

@@ -13,10 +13,14 @@ export async function createShortUrl(payload: CreateShortUrlProps) {
       shortUrlHandle: payload.shortUrlHandle
     })
 
-    const url = response.data
-    console.log(url)
-    return url
+    return response.data
   } catch (error) {
-    console.log(error)
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      throw new Error(error.response.data.message, { cause: error })
+    }
+
+    throw new Error('Não foi possível criar o link. Tente novamente.', {
+      cause: error
+    })
   }
 }

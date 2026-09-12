@@ -1,4 +1,5 @@
 import type { ComponentProps } from 'react'
+import { WarningIcon } from '@phosphor-icons/react'
 
 type InputFieldProps = ComponentProps<'input'> & {
   label: string
@@ -37,7 +38,12 @@ export function InputField({
         />
       </div>
 
-      {error && <span className="text-sm text-feedback">{error}</span>}
+      {error && (
+        <span className="flex items-center gap-1 text-sm text-gray-500">
+          <WarningIcon size={12} weight="regular" className="text-feedback" />
+          {error}
+        </span>
+      )}
     </div>
   )
 }

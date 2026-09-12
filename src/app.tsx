@@ -1,6 +1,6 @@
-import { AddLink } from './components/add-link'
-import { LinkList } from './components/link-list'
-import logo from './assets/logo.svg'
+import { CreateShortUrl } from './components/ui/create-url'
+import { UrlList } from './components/ui/url-list'
+const logo = new URL('./assets/logo.svg', import.meta.url).href
 
 export function App() {
   return (
@@ -12,8 +12,8 @@ export function App() {
           className="h-6 w-auto self-center lg:self-start"
         />
         <div className="flex flex-col items-center gap-3 lg:flex-row lg:items-start lg:gap-5">
-          <AddLink />
-          <LinkList />
+          <CreateShortUrl />
+          <UrlList />
         </div>
       </main>
     </div>

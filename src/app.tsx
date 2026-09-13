@@ -37,7 +37,7 @@ export function App() {
         />
         <div className="flex flex-col items-center gap-3 lg:flex-row lg:items-start lg:gap-5">
           <CreateShortUrl onUrlCreated={refreshUrls} />
-          <UrlList urls={urls} />
+          <UrlList urls={urls} onUrlDeleted={refreshUrls} />
         </div>
       </main>
 

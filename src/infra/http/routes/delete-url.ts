@@ -5,13 +5,13 @@ import { isRight, unwrapEither } from '@/shared/either.ts'
 
 export const deleteUrlRoute: FastifyPluginAsyncZod = async (server) => {
   server.delete(
-    '/urls',
+    '/urls/:id',
     {
       schema: {
         summary: 'Delete a short urls',
         tags: ['Delete'],
-        body: z.object({
-          url: z.string()
+        params: z.object({
+          id: z.string()
         }),
         response: {
           200: z
@@ -45,9 +45,9 @@ export const deleteUrlRoute: FastifyPluginAsyncZod = async (server) => {
       }
     },
     async (request, reply) => {
-      const { url } = request.body
+      const { id } = request.params
 
-      const result = await deleteUrl(url)
+      const result = await deleteUrl(id)
 
       if (isRight(result)) {
         const deleted = unwrapEither(result)

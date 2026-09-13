@@ -26,7 +26,8 @@ describe('Delete a short url', () => {
 
     const createdUrl = await createShortUrl(input)
 
-    const url = createdUrl.right?.shortUrl
+    const url = createdUrl.right?.id
+    console.log(url)
 
     if (!url) {
       throw new InvalidUrlFormatError()

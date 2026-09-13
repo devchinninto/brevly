@@ -21,7 +21,8 @@ server.setValidatorCompiler(validatorCompiler)
 server.setSerializerCompiler(serializerCompiler)
 
 server.register(fastifyCors, {
-  origin: '*'
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE', 'PUT']
 })
 
 server.register(fastifySwagger, {

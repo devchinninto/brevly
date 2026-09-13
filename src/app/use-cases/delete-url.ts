@@ -17,16 +17,17 @@ type deleteUrlOutput = Either<
   DeleteUrlOutput
 >
 
-export async function deleteUrl(url: DeleteUrlInput): Promise<deleteUrlOutput> {
-  const parsed = deleteUrlInput.safeParse(url)
+export async function deleteUrl(id: DeleteUrlInput): Promise<deleteUrlOutput> {
+  const parsed = deleteUrlInput.safeParse(id)
 
   if (!parsed.success) {
     throw new InvalidUrlFormatError()
   }
+  console.log(parsed.data)
 
   const deleted = await db
     .delete(schema.urls)
-    .where(eq(schema.urls.shortUrl, parsed.data))
+    .where(eq(schema.urls.id, parsed.data))
     .returning()
 
   if (deleted.length === 0) {

@@ -17,7 +17,7 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
               .string()
               .min(2)
               .max(12)
-              .regex(/^[a-zA-Z0-9]+$/)
+              .regex(/^[a-zA-Z0-9_-]+$/)
               .meta({ example: 'abc123' })
           })
           .meta({
@@ -45,8 +45,7 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
             })
             .meta({
               example: {
-                message:
-                  'The following URLs already exist: https://example.com'
+                message: 'The following URLs already exist: https://example.com'
               }
             })
             .describe('Url already exists.')

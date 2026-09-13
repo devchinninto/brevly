@@ -1,6 +1,6 @@
 import { Button } from './button'
 import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react'
-import { UrlCard, getResolvedShortUrl, type Url } from './url-card'
+import { UrlCard, type Url } from './url-card'
 
 interface UrlListProps {
   urls: Url[]
@@ -11,7 +11,7 @@ export function UrlList({ urls }: UrlListProps) {
   const isEmptyMessage = 'AINDA NÃO EXISTEM LINKS CADASTRADOS'
 
   function handleCopy(url: Url) {
-    navigator.clipboard.writeText(getResolvedShortUrl(url))
+    navigator.clipboard.writeText(`https://${url.shortUrl}`)
   }
 
   // function handleDelete(link: Link) {

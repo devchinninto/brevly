@@ -2,16 +2,11 @@ import { Button } from './button'
 import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react'
 import { UrlCard, type Url } from './url-card'
 
-const urls: Url[] = [
-  {
-    id: '1',
-    shortUrl: 'brev.ly/portfolio',
-    originalUrl: 'example.portfolio.com.br/example-user-123456',
-    accessCount: 15
-  }
-]
+interface UrlListProps {
+  urls: Url[]
+}
 
-export function UrlList() {
+export function UrlList({ urls }: UrlListProps) {
   const isEmpty = urls.length === 0
   const isEmptyMessage = 'AINDA NÃO EXISTEM LINKS CADASTRADOS'
 

@@ -1,11 +1,9 @@
-import { useState } from 'react'
 import { InputField } from './input-field'
 import { Button } from './button'
-import { Toast } from './toast'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type SubmitHandler, useForm } from 'react-hook-form'
-import { createShortUrl } from '../../http/create-url'
+import { useUrlStore } from '../../store/url-store'
 
 const createShortUrlSchema = z.object({
   originalUrl: z
@@ -30,12 +28,9 @@ const createShortUrlSchema = z.object({
 
 type CreateShortUrlPayload = z.infer<typeof createShortUrlSchema>
 
-interface CreateShortUrlProps {
-  onUrlCreated?: () => void
-}
-
-export function CreateShortUrl({ onUrlCreated }: CreateShortUrlProps) {
-  const [submitError, setSubmitError] = useState<string | null>(null)
+export function CreateShortUrl() {
+  const createUrl = useUrlStore((state) => state.createUrl)
+  const isCreating = useUrlStore((state) => state.isCreating)
 
   const {
     register,
@@ -47,21 +42,22 @@ export function CreateShortUrl({ onUrlCreated }: CreateShortUrlProps) {
   })
 
   const onSubmit: SubmitHandler<CreateShortUrlPayload> = async (payload) => {
-    try {
-      await createShortUrl(payload)
+    const created = await createUrl(payload)
+
+    if (created) {
       reset()
-      onUrlCreated?.()
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'Erro desconhecido.'
-      )
     }
   }
 
   return (
     <section className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-6 md:p-8 lg:w-95 lg:shrink-0">
       <h1 className="text-lg font-bold text-gray-600">Novo link</h1>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={handleSubmit(onSubmit)}
+        // Zod is the single source of truth to check the validity of the URLs
+        noValidate
+      >
         <InputField
           id="original_url"
           label="Link original"
@@ -79,19 +75,10 @@ export function CreateShortUrl({ onUrlCreated }: CreateShortUrlProps) {
           error={errors.shortUrlHandle?.message}
           {...register('shortUrlHandle')}
         ></InputField>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={isCreating}>
           Salvar link
         </Button>
       </form>
-
-      {submitError && (
-        <Toast
-          title="Erro no cadastro"
-          description={submitError}
-          variant="error"
-          onClose={() => setSubmitError(null)}
-        />
-      )}
     </section>
   )
 }

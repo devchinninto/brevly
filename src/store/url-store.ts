@@ -31,7 +31,7 @@ interface UrlState {
   isCreating: boolean
   notification: Notification | null
   getUrls: () => Promise<void>
-  createUrl: (payload: CreateUrlPayload) => Promise<void>
+  createUrl: (payload: CreateUrlPayload) => Promise<boolean>
   deleteUrl: (id: string) => Promise<void>
   dismissNotification: () => void
 }
@@ -80,13 +80,24 @@ export const useUrlStore = create<UrlState, [['zustand/immer', never]]>(
       })
 
       try {
-        await createShortUrl(payload)
+        const created = await createShortUrl(payload)
+
+        set((state) => {
+          state.urls.set(created.id, {
+            id: created.id,
+            shortUrl: created.shortUrl,
+            originalUrl: payload.originalUrl,
+            accessCount: created.accessCount
+          })
+        })
 
         notify({
           title: 'Link criado',
-          description: `O link brev.ly/${payload.shortUrlHandle} foi criado.`,
+          description: `O link ${created.shortUrl} foi criado.`,
           variant: 'success'
         })
+
+        return true
       } catch (error) {
         notify({
           title: 'Erro no cadastro',
@@ -95,7 +106,7 @@ export const useUrlStore = create<UrlState, [['zustand/immer', never]]>(
           variant: 'error'
         })
 
-        throw error
+        return false
       } finally {
         set((state) => {
           state.isCreating = false

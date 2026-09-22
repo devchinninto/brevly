@@ -6,12 +6,21 @@ interface CreateShortUrlProps {
   shortUrlHandle: string
 }
 
+interface CreateShortUrlResponse {
+  id: string
+  shortUrl: string
+  accessCount: number
+}
+
 export async function createShortUrl(payload: CreateShortUrlProps) {
   try {
-    const response = await axios.post(`${env.VITE_BACKEND_URL}/urls`, {
-      originalUrl: payload.originalUrl,
-      shortUrlHandle: payload.shortUrlHandle
-    })
+    const response = await axios.post<CreateShortUrlResponse>(
+      `${env.VITE_BACKEND_URL}/urls`,
+      {
+        originalUrl: payload.originalUrl,
+        shortUrlHandle: payload.shortUrlHandle
+      }
+    )
 
     return response.data
   } catch (error) {

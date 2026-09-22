@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { env } from '../env'
-import type { Url } from '../components/ui/url-card'
+import type { Url } from '../store/url-store'
 
 export async function getAll(): Promise<Url[]> {
   try {

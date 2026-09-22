@@ -3,7 +3,6 @@ import { createShortUrl } from './create-short-url.ts'
 import { db } from '@/infra/db/index.ts'
 import { schema } from '@/infra/db/schemas/index.ts'
 import { isRight, unwrapEither } from '@/shared/either.ts'
-import { env } from '@/env.ts'
 import { InvalidUrlFormatError } from '../errors/invalid-url-format.ts'
 import { UrlAlreadyExistsError } from '../errors/url-already-exists-error.ts'
 import { afterEach } from 'node:test'
@@ -27,7 +26,6 @@ describe('create a short url', () => {
     }
 
     const createdUrl = await createShortUrl(input)
-    const formattedShortUrl = `${env.PREFIX}/${input.shortUrlHandle}`
 
     let result
 
@@ -36,7 +34,7 @@ describe('create a short url', () => {
     }
 
     expect(result?.originalUrl).toEqual(input.originalUrl)
-    expect(result?.shortUrl).toEqual(formattedShortUrl)
+    expect(result?.shortUrl).toEqual(input.shortUrlHandle)
   })
 
   it('should throw an Invalid URL Format Error', async () => {

@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { env } from '@/env.ts'
 import { db } from '@/infra/db/index.ts'
 import { schema } from '@/infra/db/schemas/index.ts'
 import { eq } from 'drizzle-orm'
@@ -38,8 +37,6 @@ export async function createShortUrl(
     return makeLeft(new InvalidUrlFormatError())
   }
 
-  const formattedShortUrl = `${env.PREFIX}/${parsed.data.shortUrlHandle}`
-
   const [originalUrlMatch, shortUrlMatch] = await Promise.all([
     db
       .select({ originalUrl: schema.urls.originalUrl })
@@ -49,7 +46,7 @@ export async function createShortUrl(
     db
       .select({ shortUrl: schema.urls.shortUrl })
       .from(schema.urls)
-      .where(eq(schema.urls.shortUrl, formattedShortUrl))
+      .where(eq(schema.urls.shortUrl, parsed.data.shortUrlHandle))
       .limit(1)
   ])
 
@@ -70,7 +67,7 @@ export async function createShortUrl(
     .insert(schema.urls)
     .values({
       originalUrl: parsed.data.originalUrl,
-      shortUrl: formattedShortUrl
+      shortUrl: parsed.data.shortUrlHandle
     })
     .returning()
 

@@ -23,7 +23,6 @@ export async function deleteUrl(id: DeleteUrlInput): Promise<deleteUrlOutput> {
   if (!parsed.success) {
     throw new InvalidUrlFormatError()
   }
-  console.log(parsed.data)
 
   const deleted = await db
     .delete(schema.urls)

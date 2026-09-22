@@ -1,37 +1,14 @@
-import { useState } from 'react'
 import { Button } from './button'
 import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react'
-import { UrlCard, type Url } from './url-card'
-import { Toast } from './toast'
-import { deleteUrl } from '../../http/delete-url'
+import { UrlCard } from './url-card'
+import { useUrlStore } from '../../store/url-store'
 
-interface UrlListProps {
-  urls: Url[]
-  onUrlDeleted?: () => void
-}
+export function UrlList() {
+  const urls = useUrlStore((state) => state.urls)
+  const urlList = Array.from(urls.values())
 
-export function UrlList({ urls, onUrlDeleted }: UrlListProps) {
-  const [deleteError, setDeleteError] = useState<string | null>(null)
-  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null)
-
-  const isEmpty = urls.length === 0
+  const isEmpty = urlList.length === 0
   const isEmptyMessage = 'AINDA NÃO EXISTEM LINKS CADASTRADOS'
-
-  function handleCopy(url: Url) {
-    navigator.clipboard.writeText(`https://${url.shortUrl}`)
-  }
-
-  async function handleDelete(url: Url) {
-    try {
-      await deleteUrl(url.id)
-      setDeleteSuccess(`O link ${url.shortUrl} foi removido.`)
-      onUrlDeleted?.()
-    } catch (error) {
-      setDeleteError(
-        error instanceof Error ? error.message : 'Erro desconhecido.'
-      )
-    }
-  }
 
   return (
     <section className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-6 md:p-8 lg:w-145 ">
@@ -54,30 +31,12 @@ export function UrlList({ urls, onUrlDeleted }: UrlListProps) {
         </div>
       ) : (
         <ul className="flex flex-col divide-y divide-gray-300 border-t border-gray-300">
-          {urls.map((url) => (
+          {urlList.map((url) => (
             <li key={url.id}>
-              <UrlCard url={url} onCopy={handleCopy} onDelete={handleDelete} />
+              <UrlCard url={url} />
             </li>
           ))}
         </ul>
-      )}
-
-      {deleteError && (
-        <Toast
-          title="Erro ao excluir link"
-          description={deleteError}
-          variant="error"
-          onClose={() => setDeleteError(null)}
-        />
-      )}
-
-      {deleteSuccess && (
-        <Toast
-          title="Link removido"
-          description={deleteSuccess}
-          variant="success"
-          onClose={() => setDeleteSuccess(null)}
-        />
       )}
     </section>
   )

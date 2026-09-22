@@ -1,20 +1,17 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
-
-export interface Url {
-  id: string
-  shortUrl: string
-  originalUrl: string
-  accessCount: number
-}
+import { useUrlStore, type UrlEntry } from '../../store/url-store'
 
 interface UrlCardProps {
-  url: Url
-  onCopy?: (url: Url) => void
-  onDelete?: (url: Url) => void
+  url: UrlEntry
 }
 
-export function UrlCard({ url, onCopy, onDelete }: UrlCardProps) {
-  const { shortUrl, originalUrl, accessCount } = url
+export function UrlCard({ url }: UrlCardProps) {
+  const deleteUrl = useUrlStore((state) => state.deleteUrl)
+  const { id, shortUrl, originalUrl, accessCount, isDeleting } = url
+
+  function handleCopy() {
+    navigator.clipboard.writeText(`https://${shortUrl}`)
+  }
 
   return (
     <section className="flex items-center gap-4 py-4">
@@ -38,7 +35,7 @@ export function UrlCard({ url, onCopy, onDelete }: UrlCardProps) {
         <button
           type="button"
           aria-label="Copiar link encurtado"
-          onClick={() => onCopy?.(url)}
+          onClick={handleCopy}
           className="flex size-8 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-300"
         >
           <CopyIcon className="size-4" />
@@ -46,8 +43,9 @@ export function UrlCard({ url, onCopy, onDelete }: UrlCardProps) {
         <button
           type="button"
           aria-label="Excluir link"
-          onClick={() => onDelete?.(url)}
-          className="flex size-8 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-300"
+          onClick={() => deleteUrl(id)}
+          disabled={isDeleting}
+          className="flex size-8 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-300 disabled:pointer-events-none disabled:opacity-50"
         >
           <TrashIcon className="size-4" />
         </button>

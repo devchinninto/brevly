@@ -29,7 +29,9 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
         response: {
           201: z
             .object({
-              shortUrl: z.string().meta({ example: 'abc123' })
+              id: z.string(),
+              shortUrl: z.string().meta({ example: 'abc123' }),
+              accessCount: z.number().meta({ example: 1 })
             })
             .meta({ example: { shortUrl: 'abc123' } })
             .describe('Short url created!'),
@@ -60,7 +62,11 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
       if (isRight(result)) {
         const url = unwrapEither(result)
 
-        return reply.status(201).send({ shortUrl: url.shortUrl })
+        return reply.status(201).send({
+          id: url.id,
+          shortUrl: url.shortUrl,
+          accessCount: url.accessCount
+        })
       }
 
       const error = unwrapEither(result)

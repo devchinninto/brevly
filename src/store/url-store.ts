@@ -4,6 +4,7 @@ import { immer } from 'zustand/middleware/immer'
 import { createShortUrl } from '../http/create-url'
 import { deleteUrl as deleteUrlRequest } from '../http/delete-url'
 import { getAll } from '../http/get-all'
+import { formatShortUrl } from '../utils/format-short-url'
 
 export interface Url {
   id: string
@@ -33,6 +34,7 @@ interface UrlState {
   getUrls: () => Promise<void>
   createUrl: (payload: CreateUrlPayload) => Promise<boolean>
   deleteUrl: (id: string) => Promise<void>
+  notify: (notification: Notification) => void
   dismissNotification: () => void
 }
 
@@ -93,7 +95,7 @@ export const useUrlStore = create<UrlState, [['zustand/immer', never]]>(
 
         notify({
           title: 'Link criado',
-          description: `O link ${created.shortUrl} foi criado.`,
+          description: `O link ${formatShortUrl(created.shortUrl)} foi criado.`,
           variant: 'success'
         })
 
@@ -171,6 +173,7 @@ export const useUrlStore = create<UrlState, [['zustand/immer', never]]>(
       getUrls,
       createUrl,
       deleteUrl,
+      notify,
       dismissNotification
     }
   })

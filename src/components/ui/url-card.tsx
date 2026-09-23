@@ -1,10 +1,7 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { useUrlStore, type UrlEntry } from '../../store/url-store'
-import {
-  buildShareableUrl,
-  formatShortUrl
-} from '../../utils/format-short-url'
+import { buildShareableUrl, formatShortUrl } from '../../utils/format-short-url'
 
 interface UrlCardProps {
   url: UrlEntry
@@ -12,10 +9,17 @@ interface UrlCardProps {
 
 export function UrlCard({ url }: UrlCardProps) {
   const deleteUrl = useUrlStore((state) => state.deleteUrl)
+  const notify = useUrlStore((state) => state.notify)
   const { id, shortUrl, originalUrl, accessCount, isDeleting } = url
 
   function handleCopy() {
     navigator.clipboard.writeText(buildShareableUrl(shortUrl))
+
+    notify({
+      title: 'Link copiado com sucesso',
+      description: `O link ${formatShortUrl(shortUrl)} foi copiado para a área de transferência`,
+      variant: 'success'
+    })
   }
 
   return (

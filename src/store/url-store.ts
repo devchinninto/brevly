@@ -34,6 +34,7 @@ interface UrlState {
   getUrls: () => Promise<void>
   createUrl: (payload: CreateUrlPayload) => Promise<boolean>
   deleteUrl: (id: string) => Promise<void>
+  notify: (notification: Notification) => void
   dismissNotification: () => void
 }
 
@@ -172,6 +173,7 @@ export const useUrlStore = create<UrlState, [['zustand/immer', never]]>(
       getUrls,
       createUrl,
       deleteUrl,
+      notify,
       dismissNotification
     }
   })

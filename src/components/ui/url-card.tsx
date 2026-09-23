@@ -22,6 +22,16 @@ export function UrlCard({ url }: UrlCardProps) {
     })
   }
 
+  function handleDelete() {
+    const response = confirm(
+      `Você realmente quer apagar o link ${formatShortUrl(shortUrl)}?`
+    )
+
+    if (response) {
+      deleteUrl(id)
+    }
+  }
+
   return (
     <section className="flex items-center gap-4 py-4">
       <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -50,7 +60,7 @@ export function UrlCard({ url }: UrlCardProps) {
         <button
           type="button"
           aria-label="Excluir link"
-          onClick={() => deleteUrl(id)}
+          onClick={handleDelete}
           disabled={isDeleting}
           className="flex size-8 items-center justify-center rounded-sm bg-gray-200 text-gray-600 transition-colors hover:bg-gray-300 disabled:pointer-events-none disabled:opacity-50"
         >

@@ -1,5 +1,10 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
+import { Link } from 'react-router-dom'
 import { useUrlStore, type UrlEntry } from '../../store/url-store'
+import {
+  buildShareableUrl,
+  formatShortUrl
+} from '../../utils/format-short-url'
 
 interface UrlCardProps {
   url: UrlEntry
@@ -10,20 +15,18 @@ export function UrlCard({ url }: UrlCardProps) {
   const { id, shortUrl, originalUrl, accessCount, isDeleting } = url
 
   function handleCopy() {
-    navigator.clipboard.writeText(`https://${shortUrl}`)
+    navigator.clipboard.writeText(buildShareableUrl(shortUrl))
   }
 
   return (
     <section className="flex items-center gap-4 py-4">
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <a
-          href={`https://${shortUrl}`}
-          target="_blank"
-          rel="noreferrer"
+        <Link
+          to={`/${shortUrl}`}
           className="truncate text-md font-bold text-blue-base hover:text-blue-dark"
         >
-          {shortUrl}
-        </a>
+          {formatShortUrl(shortUrl)}
+        </Link>
         <span className="truncate text-sm text-gray-500">{originalUrl}</span>
       </div>
 

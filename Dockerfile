@@ -6,7 +6,7 @@ FROM base AS dependencies
 
 WORKDIR /usr/src
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 RUN pnpm install
 
@@ -22,9 +22,9 @@ RUN pnpm prune --prod
 
 FROM gcr.io/distroless/nodejs24-debian13 AS deploy
 
-USER 1000
-
 WORKDIR /usr/src
+
+USER 1000
 
 COPY --from=build /usr/src/dist ./dist
 COPY --from=build /usr/src/node_modules ./node_modules

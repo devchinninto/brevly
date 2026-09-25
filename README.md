@@ -6,7 +6,7 @@ Permite cadastrar, listar e remover links encurtados, redirecionar corretamente 
 
 ## Estrutura
 
-Monorepo com dois submódulos git:
+Monorepo com dois subdiretórios (acessar links abaixo para cada diretório e histórico individual de commits):
 
 | Projeto | Descrição | Stack |
 |---|---|---|

@@ -5,25 +5,46 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { type SubmitHandler, useForm } from 'react-hook-form'
 import { useUrlStore } from '../../store/url-store'
 
+const DOMAIN_REGEX =
+  /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(?::\d+)?(?:[/?#]\S*)?$/
+
+const HOSTNAME_REGEX =
+  /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/
+
+const INVALID_URL_MESSAGE = 'Por favor informe uma URL válida.'
+const INVALID_SHORT_URL_HANDLE_MESSAGE =
+  'Use apenas letras, números, hífens e underlines, entre 2 e 15 caracteres.'
+
 const createShortUrlSchema = z.object({
   originalUrl: z
     .string()
+    .trim()
+    .min(1, { error: INVALID_URL_MESSAGE })
     .transform((url) => {
-      if (!/^https?:\/\//i.test(url)) {
+      if (/^https?:\/\//i.test(url)) {
+        return url
+      }
+      if (DOMAIN_REGEX.test(url)) {
         return `https://${url}`
       }
       return url
     })
-    .pipe(
-      z.string().check(z.url({ error: 'Por favor informe uma URL válida.' }))
+    .pipe(z.string().check(z.url({ error: INVALID_URL_MESSAGE })))
+    .refine(
+      (url) => {
+        try {
+          return HOSTNAME_REGEX.test(new URL(url).hostname)
+        } catch {
+          return false
+        }
+      },
+      { error: INVALID_URL_MESSAGE }
     ),
   shortUrlHandle: z
     .string()
-    .min(2)
-    .max(12)
-    .regex(/^[a-zA-Z0-9_-]+$/, {
-      error: 'Use apenas letras, números, hífens e underlines, sem espaços.'
-    })
+    .min(2, { error: INVALID_SHORT_URL_HANDLE_MESSAGE })
+    .max(15, { error: INVALID_SHORT_URL_HANDLE_MESSAGE })
+    .regex(/^[a-zA-Z0-9_-]+$/, { error: INVALID_SHORT_URL_HANDLE_MESSAGE })
 })
 
 type CreateShortUrlPayload = z.infer<typeof createShortUrlSchema>

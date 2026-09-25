@@ -47,6 +47,12 @@ export async function createShortUrl(
   const parsed = createShortUrlInput.safeParse(input)
 
   if (!parsed.success) {
+    const errorPathType = parsed.error._zod.def[0].path[0]
+
+    if (errorPathType === 'shortUrlHandle') {
+      return makeLeft(new InvalidShortUrlHandleError())
+    }
+
     return makeLeft(new InvalidUrlFormatError())
   }
 

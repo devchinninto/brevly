@@ -20,6 +20,10 @@ const server = fastify()
 server.setValidatorCompiler(validatorCompiler)
 server.setSerializerCompiler(serializerCompiler)
 
+server.setSchemaErrorFormatter((errors) => {
+  return new Error(errors[0]?.message ?? 'Dados inválidos.')
+})
+
 server.register(fastifyCors, {
   origin: '*',
   methods: ['GET', 'POST', 'DELETE', 'PUT']

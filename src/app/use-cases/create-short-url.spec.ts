@@ -4,6 +4,7 @@ import { db } from '@/infra/db/index.ts'
 import { schema } from '@/infra/db/schemas/index.ts'
 import { isRight, unwrapEither } from '@/shared/either.ts'
 import { InvalidUrlFormatError } from '../errors/invalid-url-format.ts'
+import { InvalidShortUrlHandleError } from '../errors/invalid-short-url-handle-error.ts'
 import { UrlAlreadyExistsError } from '../errors/url-already-exists-error.ts'
 import { afterEach } from 'node:test'
 import { uuidv7 } from 'uuidv7'
@@ -17,7 +18,7 @@ afterEach(async () => {
 })
 
 describe('create a short url', () => {
-  const handle = uuidv7().replace(/-/g, '').slice(0, 12)
+  const handle = uuidv7().replace(/-/g, '').slice(0, 15)
 
   it('should create a new short url', async () => {
     const input = {
@@ -38,11 +39,9 @@ describe('create a short url', () => {
   })
 
   it('should throw an Invalid URL Format Error', async () => {
-    const invalidHandle = uuidv7().replace(/-/g, '').slice(0, 15)
-
     const input = {
-      originalUrl: `https://${invalidHandle}.com/`,
-      shortUrlHandle: invalidHandle
+      originalUrl: 'not-a-real-url',
+      shortUrlHandle: uuidv7().replace(/-/g, '').slice(0, 10)
     }
 
     const result = await createShortUrl(input)
@@ -50,6 +49,34 @@ describe('create a short url', () => {
     const error = unwrapEither(result)
 
     expect(error).toBeInstanceOf(InvalidUrlFormatError)
+  })
+
+  it('should throw an Invalid Short URL Handle Error for a too-long handle', async () => {
+    const tooLongHandle = uuidv7().replace(/-/g, '').slice(0, 16)
+
+    const input = {
+      originalUrl: `https://${tooLongHandle}.com/`,
+      shortUrlHandle: tooLongHandle
+    }
+
+    const result = await createShortUrl(input)
+
+    const error = unwrapEither(result)
+
+    expect(error).toBeInstanceOf(InvalidShortUrlHandleError)
+  })
+
+  it('should throw an Invalid Short URL Handle Error for disallowed characters', async () => {
+    const input = {
+      originalUrl: 'https://valid-url-example.com/',
+      shortUrlHandle: 'invalid handle!'
+    }
+
+    const result = await createShortUrl(input)
+
+    const error = unwrapEither(result)
+
+    expect(error).toBeInstanceOf(InvalidShortUrlHandleError)
   })
 
   it('should throw an URL Already Exists Error', async () => {

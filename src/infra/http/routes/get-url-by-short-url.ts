@@ -25,7 +25,7 @@ export const getUrlByShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
             .object({
               message: z.string()
             })
-            .meta({ example: { message: 'Url not found.' } })
+            .meta({ example: { message: 'URL não encontrada.' } })
             .describe('Url not found.')
         }
       }

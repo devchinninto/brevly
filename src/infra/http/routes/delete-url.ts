@@ -8,7 +8,7 @@ export const deleteUrlRoute: FastifyPluginAsyncZod = async (server) => {
     '/urls/:id',
     {
       schema: {
-        summary: 'Delete a short urls',
+        summary: 'Delete a short url',
         tags: ['Delete'],
         params: z.object({
           id: z.string()
@@ -25,21 +25,21 @@ export const deleteUrlRoute: FastifyPluginAsyncZod = async (server) => {
                 accessCount: z.int()
               })
             })
-            .meta({ example: { message: 'Url deleted.' } })
+            .meta({ example: { message: 'Link removido.' } })
             .describe('Url deleted.'),
 
           400: z
             .object({
               message: z.string()
             })
-            .meta({ example: { message: 'Invalid URL format.' } })
+            .meta({ example: { message: 'Formato de URL inválido.' } })
             .describe('Invalid url format.'),
 
           404: z
             .object({
               message: z.string()
             })
-            .meta({ example: { message: 'Url not found.' } })
+            .meta({ example: { message: 'URL não encontrada.' } })
             .describe('Url not found.')
         }
       }
@@ -54,7 +54,7 @@ export const deleteUrlRoute: FastifyPluginAsyncZod = async (server) => {
 
         return reply
           .status(200)
-          .send({ message: 'Url deleted.', deleted_url: deleted })
+          .send({ message: 'Link removido.', deleted_url: deleted })
       }
 
       const error = unwrapEither(result)

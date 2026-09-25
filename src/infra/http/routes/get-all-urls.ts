@@ -32,7 +32,7 @@ export const getUrlsRoute: FastifyPluginAsyncZod = async (server) => {
             .object({
               message: z.string()
             })
-            .meta({ example: { message: 'Unable to list urls' } })
+            .meta({ example: { message: 'Não foi possível listar as URLs.' } })
             .describe('Unable to list short urls.')
         }
       }
@@ -41,7 +41,9 @@ export const getUrlsRoute: FastifyPluginAsyncZod = async (server) => {
       const { urls } = await listUrls()
 
       if (!urls) {
-        return reply.status(400).send({ message: 'Unable to list urls' })
+        return reply
+          .status(400)
+          .send({ message: 'Não foi possível listar as URLs.' })
       }
 
       return reply.status(200).send({ urls })

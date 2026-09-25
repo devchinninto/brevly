@@ -5,18 +5,31 @@ import { eq } from 'drizzle-orm'
 import { UrlAlreadyExistsError } from '../errors/url-already-exists-error.ts'
 import { Either, makeLeft, makeRight } from '@/shared/either.ts'
 import { InvalidUrlFormatError } from '../errors/invalid-url-format.ts'
+import { InvalidShortUrlHandleError } from '../errors/invalid-short-url-handle-error.ts'
+
+const HOSTNAME_REGEX =
+  /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/
 
 const createShortUrlInput = z.object({
-  originalUrl: z.url(),
+  originalUrl: z.url().refine(
+    (url) => {
+      try {
+        return HOSTNAME_REGEX.test(new URL(url).hostname)
+      } catch {
+        return false
+      }
+    },
+    { error: 'Formato de URL inválido.' }
+  ),
   shortUrlHandle: z
     .string()
     .min(2)
-    .max(12)
-    .regex(/^[a-zA-Z0-9]+$/)
+    .max(15)
+    .regex(/^[a-zA-Z0-9_-]+$/)
 })
 
 type CreateShortUrlOutput = Either<
-  UrlAlreadyExistsError | InvalidUrlFormatError,
+  UrlAlreadyExistsError | InvalidUrlFormatError | InvalidShortUrlHandleError,
   {
     id: string
     originalUrl: string
@@ -58,7 +71,7 @@ export async function createShortUrl(
   if (conflicts.length > 0) {
     return makeLeft(
       new UrlAlreadyExistsError(
-        `The following URLs already exist: ${conflicts.join(', ')}`
+        `As seguintes URLs já existem: ${conflicts.join(', ')}`
       )
     )
   }

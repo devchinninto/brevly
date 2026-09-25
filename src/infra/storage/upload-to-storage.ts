@@ -23,8 +23,6 @@ export async function uploadToUrlsStorage(input: UploadToStorageInput) {
 
   const key = `${folder}/${uuidv7()}-urls-report${fileExtension}`
 
-  console.log(key)
-
   const upload = new Upload({
     client: r2,
     params: {

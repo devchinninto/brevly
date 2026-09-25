@@ -17,7 +17,7 @@ export const getUrlByShortUrlRoute: FastifyPluginAsyncZod = async (server) => {
           200: z
             .object({
               originalUrl: z.string(),
-              accessCount: z.int()
+              accessCount: z.number().meta({ example: 1 })
             })
             .describe('Get an original URL by short URL.'),
 

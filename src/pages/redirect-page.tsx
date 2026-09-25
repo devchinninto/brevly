@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useRedirectStore } from '../store/redirect-store'
 const icon = new URL('../assets/icon.svg', import.meta.url).href
+const notFoundIcon = new URL('../assets/not-found.svg', import.meta.url).href
 
 const REDIRECT_DELAY_MS = 1000 // 1 second
 
@@ -32,7 +33,11 @@ export function RedirectPage() {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-gray-200 px-3 py-8">
       <section className="flex w-full max-w-fit flex-col items-center gap-6 rounded-lg bg-gray-100 px-12 py-16 text-center">
-        <img src={icon} alt="" className="h-8 w-auto" />
+        {status !== 'not-found' ? (
+          <img src={icon} alt="" className="h-8 w-auto" />
+        ) : (
+          <img src={notFoundIcon} alt="" className="h-16 w-auto" />
+        )}
 
         {(status === 'idle' ||
           status === 'loading' ||
@@ -72,6 +77,26 @@ export function RedirectPage() {
               >
                 Voltar para o brev.ly
               </Link>
+            </div>
+          </>
+        )}
+
+        {status === 'not-found' && (
+          <>
+            <h1 className="text-lg font-bold text-gray-600">
+              Link não encontrado
+            </h1>
+            <div className="text-md text-gray-500 flex flex-col gap-1.5 max-w-110">
+              <span>
+                O link que você está tentando acessar não existe, foi removido
+                ou é uma URL inválida. Saiba mais em{' '}
+                <Link
+                  to="/"
+                  className="font-bold text-blue-base hover:text-blue-dark"
+                >
+                  brev.ly
+                </Link>
+              </span>
             </div>
           </>
         )}

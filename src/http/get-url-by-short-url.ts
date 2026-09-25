@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { env } from '../env'
 
-// TODO: Implementar a pág. 404
 export class UrlNotFoundError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options)

@@ -1,0 +1,118 @@
+openapi: 3.1.0
+
+info:
+  title: Brev.ly Server
+  version: 1.0.0
+  description: >
+    Project developed for Fullstack course at Faculdade de Tecnologia Rocketseat.
+     
+    API for shortening URLs. Allows creating short URLs from long ones
+    and listing every short URL registered so far.
+
+paths:
+  /urls:
+    get:
+      summary: List all short urls
+      tags:
+        - List
+      responses:
+        '200':
+          description: List of all short urls.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - urls
+                properties:
+                  urls:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Url'
+        '400':
+          description: Unable to list short urls.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unable to list urls
+
+    post:
+      summary: Create a short url
+      tags:
+        - Create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlInput'
+      responses:
+        '201':
+          description: Short url created!
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - shortUrl
+                properties:
+                  shortUrl:
+                    type: string
+                    example: abc123
+              example:
+                shortUrl: abc123
+        '400':
+          description: Invalid url format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Invalid URL format.
+        '409':
+          description: Url already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: 'The following URLs already exist: https://example.com'
+
+components:
+  schemas:
+    Url:
+      type: object
+      required:
+        - short_url
+      properties:
+        short_url:
+          type: string
+          example: brev.ly/shortUrl
+    UrlInput:
+      type: object
+      required:
+        - originalUrl
+        - shortUrlHandle
+      properties:
+        originalUrl:
+          type: string
+          format: url
+          example: https://example.com
+        shortUrlHandle:
+          type: string
+          minLength: 2
+          maxLength: 12
+          pattern: '^[a-zA-Z0-9]+$'
+          example: abc123
+      example:
+        originalUrl: https://example.com
+        shortUrlHandle: abc123
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
